@@ -10,10 +10,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.myapplication.ui.screens.AuthScreen
+import com.example.myapplication.ui.screens.CreateOrUpdateUserScreen
 import com.example.myapplication.ui.screens.GenerationQrCodeScreen
 import com.example.myapplication.ui.screens.ScanQrCodeScreen
 import com.example.myapplication.ui.screens.UserInfoScreen
 import com.example.myapplication.ui.screens.UserSharedDataStore
+import com.example.myapplication.ui.screens.UserUpdateDetailsScreen
+import com.example.myapplication.ui.screens.UsersScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +27,7 @@ class MainActivity : ComponentActivity() {
 
             NavHost(
                 navController = navController,
-                startDestination = if(userSharedDataStore.getIsAuth())
+                startDestination = if(userSharedDataStore.getToken() != null)
                     "GenerationQrCodeScreen"
                 else
                     "auth",
@@ -44,16 +47,45 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable(
-                        route = "user_info/{uKey}",
+                        route = "user_info/{userId}",
                         arguments = listOf(
-                            navArgument("uKey"){
-                                type = NavType.StringType
+                            navArgument("userId"){
+                                type = NavType.IntType
                                 nullable = false
                             }
                         )
                     ) {
                         UserInfoScreen(
-                            uKey = it.arguments!!.getString("uKey", "")
+                            userId = it.arguments!!.getInt("userId", 0),
+                            navController = navController
+                        )
+                    }
+
+                    composable("users") {
+                        UsersScreen(navController = navController)
+                    }
+
+                    composable("users/create_or_update?userId={userId}", arguments = listOf(
+                        navArgument("userId"){
+                            type = NavType.StringType
+                            nullable = true
+                        }
+                    )) {
+                        CreateOrUpdateUserScreen(
+                            navController = navController,
+                            userId = it.arguments?.getString("userId")?.toIntOrNull()
+                        )
+                    }
+
+                    composable("user/{userId}/details/update", arguments = listOf(
+                        navArgument("userId"){
+                            type = NavType.IntType
+                            nullable = false
+                        }
+                    )) {
+                        UserUpdateDetailsScreen(
+                            navController = navController,
+                            userId = it.arguments!!.getInt("userId")
                         )
                     }
                 }

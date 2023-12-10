@@ -37,15 +37,6 @@ import com.example.myapplication.data.network.networkApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-enum class UserRole {
-    BASE_USER,
-    ADMIN
-}
-
-data class User(
-    val userRole: UserRole
-)
-
 const val USER_SHARED_KEY_NAME = "user"
 
 class UserSharedDataStore(context: Context) {
@@ -68,9 +59,9 @@ class UserSharedDataStore(context: Context) {
         }
     }
 
-    fun getIsAuth(): Boolean {
+    fun getIsAdmin(): Boolean {
         return try {
-            shared.getBoolean("is_auth", false)
+            shared.getBoolean("is_admin", false)
         }catch (e: Exception) {
             false
         }
@@ -78,9 +69,9 @@ class UserSharedDataStore(context: Context) {
 
     fun save(i: LoginResponse) {
         shared.edit()
-            .putBoolean("is_auth", true)
             .putString("token", i.accessToken)
             .putInt("user_id", i.userId)
+            .putBoolean("is_admin", i.isAdmin)
             .apply()
     }
 }

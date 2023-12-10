@@ -52,7 +52,7 @@ fun ScanQrCodeScreen(
 
     if(qrCodeText.isNotEmpty()) {
         LaunchedEffect(key1 = Unit, block = {
-            if(qrCodeText.contains("/") || qrCodeText.contains(".") || qrCodeText.contains("$")) {
+            if(qrCodeText.toIntOrNull() == null) {
                 Toast.makeText(context, "Неверный qr-код", Toast.LENGTH_SHORT).show()
                 qrCodeText = ""
             }else {

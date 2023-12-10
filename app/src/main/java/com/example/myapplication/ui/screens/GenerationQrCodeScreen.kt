@@ -27,14 +27,15 @@ fun GenerationQrCodeScreen(
 ) {
     val context = LocalContext.current
     val userSharedDataStore = remember { UserSharedDataStore(context) }
-    val uKey by remember { mutableStateOf(userSharedDataStore.getUserId()) }
+    val userId by remember { mutableStateOf(userSharedDataStore.getUserId()) }
+    var isAdmin by remember { mutableStateOf(userSharedDataStore.getIsAdmin()) }
 
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        generateBarCode(uKey.toString())?.let {
+        generateBarCode(userId.toString())?.let {
             Image(
                 bitmap = it.asImageBitmap(),
                 contentDescription = null
@@ -42,7 +43,13 @@ fun GenerationQrCodeScreen(
         }
 
         Button(onClick = { navController.navigate("scan_qr_code") }) {
-            Text(text = "Scan qr code")
+            Text(text = "Сканировать qr код")
+        }
+
+        if(isAdmin) {
+            Button(onClick = { navController.navigate("users") }) {
+                Text(text = "Пользователи")
+            }
         }
     }
 }
