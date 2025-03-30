@@ -1,12 +1,17 @@
 package com.example.myapplication.ui.screens
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Replay
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -23,6 +28,7 @@ import com.example.myapplication.data.network.model.user.CreateOrUpdateUserParam
 import com.example.myapplication.data.network.networkApi
 import com.example.myapplication.ui.view.BaseOutlinedTextField
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 @Composable
 fun CreateOrUpdateUserScreen(
@@ -80,7 +86,19 @@ fun CreateOrUpdateUserScreen(
             BaseOutlinedTextField(
                 value = ukey,
                 onValueChange = { ukey = it },
-                label = "uKey"
+                label = "uKey",
+                trailingIcon = {
+                    IconButton(
+                        onClick = {
+                            ukey = UUID.randomUUID().toString()
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Replay,
+                            contentDescription = null
+                        )
+                    }
+                }
             )
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -101,7 +119,7 @@ fun CreateOrUpdateUserScreen(
                     }else {
                         Toast.makeText(
                             context,
-                            response.errorBody()?.string().toString(),
+                            response.code().toString(),
                             Toast.LENGTH_SHORT
                         ).show()
                     }
