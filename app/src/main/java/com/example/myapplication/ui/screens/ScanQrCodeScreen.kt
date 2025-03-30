@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.myapplication.data.network.NetworkApi
 import com.example.myapplication.ui.view.camera.BarcodeScanner
 import com.example.myapplication.ui.view.camera.CameraControlsView
 import com.example.myapplication.ui.view.camera.switchLens
@@ -36,9 +37,11 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun ScanQrCodeScreen(
-    navController: NavController
+    navController: NavController,
+    networkApi: NetworkApi
 ) {
     val context = LocalContext.current
+    val userSharedDataStore = remember { UserSharedDataStore(context) }
     var qrCodeText by remember { mutableStateOf("") }
     val permissions = rememberMultiplePermissionsState(
         listOf(
@@ -56,7 +59,17 @@ fun ScanQrCodeScreen(
                 Toast.makeText(context, "Неверный qr-код", Toast.LENGTH_SHORT).show()
                 qrCodeText = ""
             }else {
-                navController.navigate("user_info/$qrCodeText")
+                userSharedDataStore.getToken()?.let {
+                    val response = networkApi.createScanQrCodes(
+                        userId = qrCodeText.toInt(),
+                        token = "Bearer $it"
+                    )
+                    if (response.isSuccessful) {
+                        navController.navigate("user_info/$qrCodeText")
+                    }else {
+                        Toast.makeText(context, response.code().toString(), Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         })
     }else {

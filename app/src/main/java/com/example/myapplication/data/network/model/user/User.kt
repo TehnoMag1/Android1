@@ -7,8 +7,8 @@ data class User(
     val midName: String,
     val ukey: String,
     val birthday: String?,
-    val npassport: Int?,
-    val spassport: Int?,
+    val workshopName: String?,
+    val workshopNumber: String?,
     val doljnost: Doljnost?,
 )
 

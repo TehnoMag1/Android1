@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.myapplication.data.network.networkApi
 import com.example.myapplication.ui.screens.AuthScreen
 import com.example.myapplication.ui.screens.CreateOrUpdateUserScreen
 import com.example.myapplication.ui.screens.GenerationQrCodeScreen
@@ -39,7 +40,10 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable("scan_qr_code") {
-                        ScanQrCodeScreen(navController = navController)
+                        ScanQrCodeScreen(
+                            navController = navController,
+                            networkApi = networkApi
+                        )
                     }
 
                     composable("GenerationQrCodeScreen") {

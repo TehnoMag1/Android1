@@ -50,8 +50,8 @@ fun UserUpdateDetailsScreen(
     val networkApi = remember { networkApi }
     val userSharedDataStore = remember { UserSharedDataStore(context) }
     var birthday by remember { mutableStateOf("") }
-    var npassport by remember { mutableStateOf("") }
-    var spassport by remember { mutableStateOf("") }
+    var workshopName by remember { mutableStateOf("") }
+    var workshopNumber by remember { mutableStateOf("") }
     var doljnostId by remember { mutableStateOf<Int?>(null) }
     var doljnosti by remember { mutableStateOf<List<Doljnost>>(emptyList()) }
 
@@ -60,8 +60,8 @@ fun UserUpdateDetailsScreen(
             userSharedDataStore.getToken()?.let { token ->
                 networkApi.userGetById(id, "Bearer $token").body()?.let {
                     birthday = it.birthday ?: return@let
-                    npassport = it.npassport.toString()
-                    spassport = it.spassport.toString()
+                    workshopName = it.workshopName.toString()
+                    workshopNumber = it.workshopNumber.toString()
                     doljnostId = it.doljnost?.id
                 }
 
@@ -86,16 +86,16 @@ fun UserUpdateDetailsScreen(
             )
 
             BaseOutlinedTextField(
-                value = npassport,
-                onValueChange = { npassport = it },
-                label = "Номер паспорта",
+                value = workshopName,
+                onValueChange = { workshopName = it },
+                label = "Название цеха",
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 
             BaseOutlinedTextField(
-                value = spassport,
-                onValueChange = { spassport = it },
-                label = "Серия паспорта",
+                value = workshopNumber,
+                onValueChange = { workshopNumber = it },
+                label = "Номер цеха",
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 
@@ -132,8 +132,8 @@ fun UserUpdateDetailsScreen(
                         val body = CreateUserDetailsParams(
                             birthday = birthday,
                             doljnostId = doljnostId!!,
-                            npassport = npassport.toInt(),
-                            spassport = spassport.toInt()
+                            workshopName = workshopName,
+                            workshopNumber = workshopNumber
                         )
                         val token = userSharedDataStore.getToken()
                         val response = networkApi.createUserDetails(userId, body, "Bearer $token")
